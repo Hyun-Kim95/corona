@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <title>dataList</title>
 <%@ include file="head.jspf"%>
+<!-- Required chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="container mx-auto p-1">
 
 	<div class="">
@@ -24,7 +26,7 @@
 		<!-- 그래프 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-center">
 			<div class="text-3xl font-bold px-10 py-3">그래프(확진,사망)</div>
-			<canvas class="p-5" id="chartBar"></canvas>
+			<canvas class="p-5" id="chart"></canvas>
 		</div>
 		<!-- 지역별 표시 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-left">
@@ -51,40 +53,42 @@
 </div>
 <!-- Chart bar -->
 <script>
-	const labelsBarChart = [
-		"${classification[0]}",
-		"${classification[1]}",
-		"${classification[2]}",
-		"${classification[3]}",
-		"${classification[4]}",
-		"${classification[5]}",
-		"${classification[6]}",
-		"${classification[7]}",
+	const labelsChart = [
+		"${day[6]}",
+		"${day[5]}",
+		"${day[4]}",
+		"${day[3]}",
+		"${day[2]}",
+		"${day[1]}",
+		"${day[0]}",
 	];
-  	const dataBarChart = {
-    	labels: labelsBarChart,
+  	const dataChart = {
+    	labels: labelsChart,
     	datasets: [
       	{
-        	label: ["분류별 실패율"],
+        	label: ["확진자"],
+        	yAxisID: "left",
         	backgroundColor: "red",
         	borderColor: "red",
-        	data: ["${failRate[0]}", "${failRate[1]}", "${failRate[2]}", "${failRate[3]}", "${failRate[4]}", "${failRate[5]}", "${failRate[6]}", "${failRate[7]}"],
+        	data: ["${newcase[6]}", "${newcase[5]}", "${newcase[4]}", "${newcase[3]}", "${newcase[2]}", "${newcase[1]}", "${newcase[0]}"],
       	},
       	{
-        	label: ["전체에서 각 분류가 차지하는 비율"],
+        	label: ["사망자"],
+        	yAxisID: "right",
         	backgroundColor: "violet",
         	borderColor: "violet",
-        	data: ["${totalRate[0]}", "${totalRate[1]}", "${totalRate[2]}", "${totalRate[3]}", "${totalRate[4]}", "${totalRate[5]}", "${totalRate[6]}", "${totalRate[7]}"],
+        	data: ["${death[6]}", "${death[5]}", "${death[4]}", "${death[3]}", "${death[2]}", "${death[1]}", "${death[0]}"],
       	},
     	],
   	};
-	const configBarChart = {
-   		type: "bar",
-    	data: dataBarChart,
+	const configChart = {
+   		type: "line",
+    	data: dataChart,
   	};
-  	var chartBar = new Chart(
-    	document.getElementById("chartBar"),
-    	configBarChart
+  	var chart = new Chart(
+    	document.getElementById("chart"),
+    	configChart
   	);
+
 </script>
 <%@ include file="foot.jspf"%>
