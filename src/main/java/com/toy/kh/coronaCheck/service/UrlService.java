@@ -138,7 +138,7 @@ public class UrlService {
 
 	        rd.close();
 	        conn.disconnect();
-	        System.out.println(sb.toString());
+//	        System.out.println(sb.toString());
 
 		}catch (Exception e) {
 			e.printStackTrace();

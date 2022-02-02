@@ -17,7 +17,7 @@ public class Util {
 	public static String getPastDateStr(int day) {
 		SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMdd");
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, day);
+		cal.add(Calendar.DATE, day*(-1));
 		return format2.format(cal.getTime());
 	}
 	
