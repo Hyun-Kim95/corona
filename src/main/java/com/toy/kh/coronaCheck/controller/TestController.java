@@ -21,23 +21,23 @@ public class TestController {
 		String[] ziyok = { "korea", "seoul", "busan", "daegu", "incheon", "gwangju", "daejeon", "ulsan", "sejong",
 				"gyeonggi", "gangwon", "chungbuk", "chungnam", "jeonbuk", "jeonnam", "gyeongbuk", "gyeongnam", "jeju" };
 
+		Map<String, String> results = urlService.todayResult();
 		// 오늘과 관련된 정보들
 		for (String zi : ziyok) {
-			Map<String, String> results = urlService.todayResult(zi);
-
 			req.setAttribute("now", Util.getNowDateStr());
-			req.setAttribute(zi + "countryName", results.get("countryName"));
-			req.setAttribute(zi + "newCase", results.get("newCase"));
-			req.setAttribute(zi + "totalCase", results.get("totalCase"));
-			req.setAttribute(zi + "recovered", results.get("recovered"));
-			req.setAttribute(zi + "death", results.get("death"));
-			req.setAttribute(zi + "percentage", results.get("percentage"));
-			req.setAttribute(zi + "newCcase", results.get("newCcase"));
-			req.setAttribute(zi + "newFcase", results.get("newFcase"));
+			req.setAttribute(zi + "countryName", results.get(zi + "countryName"));
+			req.setAttribute(zi + "newCase", results.get(zi + "newCase"));
+			req.setAttribute(zi + "totalCase", results.get(zi + "totalCase"));
+			req.setAttribute(zi + "recovered", results.get(zi + "recovered"));
+			req.setAttribute(zi + "death", results.get(zi + "death"));
+			req.setAttribute(zi + "percentage", results.get(zi + "percentage"));
+			req.setAttribute(zi + "newCcase", results.get(zi + "newCcase"));
+			req.setAttribute(zi + "newFcase", results.get(zi + "newFcase"));
 		}
 
 		// 과거정보 가져올 준비
 		Map<String, String> past;
+		past = urlService.pastResult();
 		int yesterday, one, two, month;
 		String buho = "";
 
@@ -52,9 +52,7 @@ public class TestController {
 
 		// 1주전 정보 가져옴
 		String seven = Util.getPastDateStr(7);
-		past = urlService.pastResult(seven);
-		one = Integer.parseInt(((String) req.getAttribute("koreatotalCase")).replace(",", ""))
-				- Integer.parseInt(past.get("dicideCnt").replace(",", ""));
+		one = Util.getAsInt(req.getAttribute("koreatotalCase").toString().replace(",", ""), 0) - Util.getAsInt(past.get(seven + "dicideCnt"), 0);
 		if (one < 0) {
 			buho = "↓";
 		} else {
@@ -64,9 +62,7 @@ public class TestController {
 
 		// 2주전 정보 가져옴
 		String fourteen = Util.getPastDateStr(14);
-		past = urlService.pastResult(fourteen);
-		two = Integer.parseInt(((String) req.getAttribute("koreatotalCase")).replace(",", ""))
-				- Integer.parseInt(past.get("dicideCnt").replace(",", ""));
+		two = Util.getAsInt(req.getAttribute("koreatotalCase").toString().replace(",", ""), 0) - Util.getAsInt(past.get(fourteen + "dicideCnt"), 0);
 		if (two < 0) {
 			buho = "↓";
 		} else {
@@ -76,9 +72,7 @@ public class TestController {
 
 		// 1달전 정보 가져옴
 		String onemonth = Util.getPastMonthStr();
-		past = urlService.pastResult(onemonth);
-		month = Integer.parseInt(((String) req.getAttribute("koreatotalCase")).replace(",", ""))
-				- Integer.parseInt(past.get("dicideCnt").replace(",", ""));
+		month = Util.getAsInt(req.getAttribute("koreatotalCase").toString().replace(",", ""), 0) - Util.getAsInt(past.get(onemonth + "dicideCnt"), 0);
 		if (month < 0) {
 			buho = "↓";
 		} else {
@@ -88,15 +82,13 @@ public class TestController {
 
 		// 1주일간의 정보 모두 가져옴(차트생성용 데이터)
 		// String 을 List<>로 바꿔도 괜찮을 듯, todolist에서 보고 맞춰서 하기
-		String[] newcase = new String[7];
-		String[] death = new String[7];
+		int[] newcase = new int[7];
+		int[] death = new int[7];
 		String[] day = new String[7];
-		Map<String, String> week;
 		for (int i = 0; i < 7; i++) {
 			day[i] = Util.getPastDateStr(i);
-			week = urlService.pastResult(day[i]);
-			newcase[i] = week.get("dicideCnt");
-			death[i] = week.get("deathCnt");
+			newcase[i] = Util.getAsInt(past.get(day[i] + "dicideCnt"), 0);
+			death[i] = Util.getAsInt(past.get(day[i] + "deathCnt"), 0);
 		}
 		req.setAttribute("day", day);
 		req.setAttribute("newcase", newcase);

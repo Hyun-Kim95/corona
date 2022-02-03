@@ -19,11 +19,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.toy.kh.coronaCheck.util.Util;
+
 @Service
 public class UrlService {
 
 	// 오늘, 어제와의 차이 정보확인 가능(신규 확진자 수, 확진자 수, 완치자 수, 사망자 수, 전일대비 증감)
-	public Map<String, String> todayResult(String zi){
+	public Map<String, String> todayResult(){
 		
 		Map<String, String> today = new HashMap<>();
 		
@@ -54,27 +56,32 @@ public class UrlService {
 	        // JSON parser 만들어 문자열 데이터를 객체화한다.
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject)parser.parse(result);
-            	        
+         
+            String[] ziyok = { "korea", "seoul", "busan", "daegu", "incheon", "gwangju", "daejeon", "ulsan", "sejong",
+    				"gyeonggi", "gangwon", "chungbuk", "chungnam", "jeonbuk", "jeonnam", "gyeongbuk", "gyeongnam", "jeju" };
+            
             // 객체형태로
             // {"returnType":"json","clearDate":"--",.......},...
-            JSONObject local = (JSONObject) obj.get(zi);		// 지역명
-            String countryName = (String) local.get("countryName");	// 시도명(지역명)	
-            String newCase = (String) local.get("newCase");			// 신규확진환자수
-            String totalCase = (String) local.get("totalCase");		// 확진환자수
-            String recovered = (String) local.get("recovered");		// 완치자수
-            String death = (String) local.get("death");				// 사망자
-            String percentage  = (String) local.get("percentage");	// 발생률
-            String newCcase  = (String) local.get("newCcase");		// 전일대비증감-해외유입
-            String newFcase  = (String) local.get("newFcase");		// 전일대비증감-지역발생
-            
-            today.put("countryName", countryName);
-            today.put("newCase", newCase);
-            today.put("totalCase", totalCase);
-            today.put("recovered", recovered);
-            today.put("death", death);
-            today.put("percentage", percentage);
-            today.put("newCcase", newCcase);
-            today.put("newFcase", newFcase);
+            for (String zi : ziyok) {
+            	JSONObject local = (JSONObject) obj.get(zi);		// 지역명
+                String countryName = (String) local.get("countryName");	// 시도명(지역명)	
+                String newCase = (String) local.get("newCase");			// 신규확진환자수
+                String totalCase = (String) local.get("totalCase");		// 확진환자수
+                String recovered = (String) local.get("recovered");		// 완치자수
+                String death = (String) local.get("death");				// 사망자
+                String percentage  = (String) local.get("percentage");	// 발생률
+                String newCcase  = (String) local.get("newCcase");		// 전일대비증감-해외유입
+                String newFcase  = (String) local.get("newFcase");		// 전일대비증감-지역발생
+                
+                today.put(zi + "countryName", countryName);
+                today.put(zi + "newCase", newCase);
+                today.put(zi + "totalCase", totalCase);
+                today.put(zi + "recovered", recovered);
+                today.put(zi + "death", death);
+                today.put(zi + "percentage", percentage);
+                today.put(zi + "newCcase", newCcase);
+                today.put(zi + "newFcase", newFcase);
+			}
             
 	        rd.close();
 	        conn.disconnect();
@@ -87,17 +94,19 @@ public class UrlService {
 		return today;
 	}
 	
-	// 과거의 기록들 확인 가능(확진자 수, 사망자 수)
-	public Map<String, String> pastResult(String day){
+	// 과거의 기록들 확인 가능(확진자 수, 사망자 수) 오늘 + 1달전까지
+	public Map<String, String> pastResult(){
 		Map<String, String> past = new HashMap<>();
 
+		String day = Util.getNowDateStr();
+		String month = Util.getPastMonthStr();
 		try {
 			StringBuilder urlBuilder = new StringBuilder("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"); /*URL*/
 	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Uj7JHVlaJcD5DBtPQECFGH6tf1vBmpRshO6aEpIULQ7qrQ%2FCZiiycs6W6O1AV9pRmCPCiNBrc5SjUQAzqAVjeQ%3D%3D"); /*Service Key*/
 	        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
 	        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
 	        urlBuilder.append("&" + URLEncoder.encode("startCreateDt","UTF-8") + "=" + URLEncoder.encode(day, "UTF-8")); /*검색할 생성일 범위의 시작*/
-	        urlBuilder.append("&" + URLEncoder.encode("endCreateDt","UTF-8") + "=" + URLEncoder.encode(day, "UTF-8")); /*검색할 생성일 범위의 종료*/
+	        urlBuilder.append("&" + URLEncoder.encode("endCreateDt","UTF-8") + "=" + URLEncoder.encode(month, "UTF-8")); /*검색할 생성일 범위의 종료*/
 	        URL url = new URL(urlBuilder.toString());
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	        conn.setRequestMethod("GET");
@@ -118,10 +127,10 @@ public class UrlService {
 
 				Element eElement = (Element) nNode;
 				
-				System.out.println("해당일자 : " + getTagValue("stateDt", eElement));
+//				System.out.println("해당일자 : " + getTagValue("stateDt", eElement));
 
-				past.put("dicideCnt", getTagValue("decideCnt", eElement));
-				past.put("deathCnt", getTagValue("deathCnt", eElement));
+				past.put(getTagValue("stateDt", eElement) + "dicideCnt", getTagValue("decideCnt", eElement));
+				past.put(getTagValue("stateDt", eElement) + "deathCnt", getTagValue("deathCnt", eElement));
 			}
 
 	        BufferedReader rd;
@@ -143,7 +152,7 @@ public class UrlService {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return past;
 	}
 
