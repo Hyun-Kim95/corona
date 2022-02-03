@@ -26,7 +26,13 @@
 		<!-- 그래프 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-center">
 			<div class="text-3xl font-bold px-10 py-3">그래프(확진,사망)</div>
-			<canvas class="p-5" id="chart"></canvas>
+			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="daily">일별</button>
+			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="weekly">주별</button>
+			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="monthly">월별</button>
+			<div class="flex">
+				<canvas class="w-screen" id="chart1"></canvas>
+				<canvas class="w-screen" id="chart2"></canvas>	
+			</div>
 		</div>
 		<!-- 지역별 표시 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-left">
@@ -62,33 +68,51 @@
 		"${day[1]}",
 		"${day[0]}",
 	];
-  	const dataChart = {
+  	const dataChart1 = {
     	labels: labelsChart,
     	datasets: [
       	{
         	label: ["확진자"],
-        	yAxisID: "left",
         	backgroundColor: "red",
         	borderColor: "red",
         	data: ["${newcase[6]}", "${newcase[5]}", "${newcase[4]}", "${newcase[3]}", "${newcase[2]}", "${newcase[1]}", "${newcase[0]}"],
-      	},
-      	{
+      	}
+    	],
+  	};
+  	
+  	const dataChart2 = {
+		labels: labelsChart,
+		datasets: [
+		{
         	label: ["사망자"],
-        	yAxisID: "right",
         	backgroundColor: "violet",
         	borderColor: "violet",
         	data: ["${death[6]}", "${death[5]}", "${death[4]}", "${death[3]}", "${death[2]}", "${death[1]}", "${death[0]}"],
-      	},
-    	],
+		}
+		]
+  	}
+  	
+	const configChart1 = {
+   		type: "bar",
+    	data: dataChart1,
+    	options: {
+    		responsive: false,
+    	}
   	};
-	const configChart = {
-   		type: "line",
-    	data: dataChart,
-  	};
-  	var chart = new Chart(
-    	document.getElementById("chart"),
-    	configChart
+  	var chart1 = new Chart(
+    	document.getElementById("chart1"),
+    	configChart1
   	);
-
+  	const configChart2 = {
+		type: "bar",
+		data: dataChart2,
+		options: {
+    		responsive: false,
+    	}
+  	}
+  	var chart2 = new Chart(
+		document.getElementById("chart2"),
+    	configChart2
+  	)
 </script>
 <%@ include file="foot.jspf"%>
