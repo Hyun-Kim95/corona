@@ -1,6 +1,7 @@
 package com.toy.kh.coronaCheck.controller;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,23 +19,14 @@ public class TestController {
 
 	@RequestMapping("main")
 	public String main(HttpServletRequest req) {
-		String[] ziyok = { "korea", "seoul", "busan", "daegu", "incheon", "gwangju", "daejeon", "ulsan", "sejong",
-				"gyeonggi", "gangwon", "chungbuk", "chungnam", "jeonbuk", "jeonnam", "gyeongbuk", "gyeongnam", "jeju" };
 
 		Map<String, String> results = urlService.todayResult();
 		// 오늘과 관련된 정보들
-		for (String zi : ziyok) {
-			req.setAttribute("now", Util.getNowDateStr());
-			req.setAttribute(zi + "countryName", results.get(zi + "countryName"));
-			req.setAttribute(zi + "newCase", results.get(zi + "newCase"));
-			req.setAttribute(zi + "totalCase", results.get(zi + "totalCase"));
-			req.setAttribute(zi + "recovered", results.get(zi + "recovered"));
-			req.setAttribute(zi + "death", results.get(zi + "death"));
-			req.setAttribute(zi + "percentage", results.get(zi + "percentage"));
-			req.setAttribute(zi + "newCcase", results.get(zi + "newCcase"));
-			req.setAttribute(zi + "newFcase", results.get(zi + "newFcase"));
+		Set<String> keys = results.keySet();
+		for (String key : keys) {
+			req.setAttribute(key, results.get(key));
 		}
-
+		
 		// 과거정보 가져올 준비
 		Map<String, String> past;
 		past = urlService.pastResult();
@@ -48,7 +40,7 @@ public class TestController {
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("koreanewFcase", yesterday + buho);
+		req.setAttribute("koreanewFcase", Util.numberFormat(yesterday) + buho);
 
 		// 1주전 정보 가져옴
 		String seven = Util.getPastDateStr(7);
@@ -58,7 +50,7 @@ public class TestController {
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("onedicideCnt", one + buho);
+		req.setAttribute("onedicideCnt", Util.numberFormat(one) + buho);
 
 		// 2주전 정보 가져옴
 		String fourteen = Util.getPastDateStr(14);
@@ -68,7 +60,7 @@ public class TestController {
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("twodicideCnt", two + buho);
+		req.setAttribute("twodicideCnt", Util.numberFormat(two) + buho);
 
 		// 1달전 정보 가져옴
 		String onemonth = Util.getPastMonthStr();
@@ -78,7 +70,7 @@ public class TestController {
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("monthdicideCnt", month + buho);
+		req.setAttribute("monthdicideCnt", Util.numberFormat(month) + buho);
 
 		// 1주일간의 정보 모두 가져옴(차트생성용 데이터)
 		// String 을 List<>로 바꿔도 괜찮을 듯, todolist에서 보고 맞춰서 하기

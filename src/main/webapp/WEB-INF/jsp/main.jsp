@@ -9,19 +9,24 @@
 <div class="container mx-auto p-1">
 
 	<div class="">
-		<div class="flex shadow rounded bg-white mr-1 mt-3 p-1">
-			<div class="text-md font-bold px-10 py-3">신규 확진자:<br>${koreanewCase}</div>
-			<div class="text-md font-bold px-10 py-3">총 확진자:<br>${koreatotalCase}</div>
-			<div class="text-md font-bold px-10 py-3">완치자:<br>${korearecovered}</div>
+		<div class="flex text-center shadow rounded bg-white mr-1 mt-3 p-1">
+			<div class="flex-grow"></div>
+			<div class="text-md font-bold px-10 py-3">확진자:<br><span class="text-red-600">${koreatotalCase}</span></div>
+			<div class="text-md font-bold px-10 py-3">완치자:<br><span class="text-blue-600">${korearecovered}</span></div>
 			<div class="text-md font-bold px-10 py-3">사망자:<br>${koreadeath}</div>
+			<div class="flex-grow"></div>
 		</div>
 		<!-- 금일 확진자 -->
 		<div class="flex shadow rounded bg-white mr-1 mt-3 p-1">
-			<div class="text-md font-bold px-10 py-3">신규 확진자:<br>${koreanewCase}</div>
-			<div class="text-md font-bold px-10 py-3">vs어제:<br>${koreanewFcase}</div>
-			<div class="text-md font-bold px-10 py-3">vs1주 전:<br>${onedicideCnt}</div>
-			<div class="text-md font-bold px-10 py-3">vs2주 전:<br>${twodicideCnt}</div>
-			<div class="text-md font-bold px-10 py-3">vs1달 전:<br>${monthdicideCnt}</div>
+			<div class="text-md font-bold px-10 py-3">신규 확진자<br>${koreanewCase}</div>
+			<div>
+				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600">${koreanewFcase}</span></div>
+				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600">${onedicideCnt}</span></div>
+			</div>
+			<div>
+				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>2주전: <span class="text-red-600">${twodicideCnt}</span></div>
+				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>1달전: <span class="text-red-600">${monthdicideCnt}</span></div>
+			</div>
 		</div>
 		<!-- 그래프 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-center">

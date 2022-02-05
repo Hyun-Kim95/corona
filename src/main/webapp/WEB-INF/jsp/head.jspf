@@ -22,10 +22,23 @@
 <header class="top-bar h-20 bg-white">
 	<div class="container mx-auto h-full w-screen flex">
 		<div class="flex-grow"></div>
-		<div class="flex items-center px-12">
-			<a href="/usr/main" class="font-bold text-3xl flex items-center">
-				<span>Corona check</span>
-			</a>
+		<div>
+			<div class="flex text-center px-12">
+				<a href="/usr/main" class="font-bold text-3xl flex items-center">
+					<span>Corona check</span>
+				</a>
+			</div>
+			<div class="flex">
+			<div class="">
+				<a href="#" class="text-xl">국내</a>
+			</div>
+			<div>
+				<a href="#" class="text-xl">세계</a>
+			</div>
+			<div>
+				<a href="#" class="text-xl">백신</a>
+			</div>
+			</div>
 		</div>
 		<div class="flex-grow"></div>
 	</div>

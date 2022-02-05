@@ -1,6 +1,7 @@
 package com.toy.kh.coronaCheck.util;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,5 +48,12 @@ public class Util {
 		}
 
 		return defaultValue;
+	}
+	
+	// 숫자가 커질 경우에 보기 좋게 하기 위해서
+	public static String numberFormat(int num) {
+		DecimalFormat df = new DecimalFormat("###,###,###");
+		
+		return df.format(num);
 	}
 }
