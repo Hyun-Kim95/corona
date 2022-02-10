@@ -20,7 +20,7 @@
 		<div class="flex shadow rounded bg-white mr-1 mt-3 p-1">
 			<div class="text-md font-bold px-10 py-3">신규 확진자<br>${koreanewCase}</div>
 			<div>
-				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600">${koreanewFcase}</span></div>
+				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600">${koreanewCcase}</span></div>
 				<div class="text-md font-bold px-10 py-3"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600">${onedicideCnt}</span></div>
 			</div>
 			<div>
@@ -30,11 +30,23 @@
 		</div>
 		<!-- 그래프 -->
 		<div class="shadow rounded bg-white container mr-1 mt-3 p-1 text-center">
-			<div class="text-3xl font-bold px-10 py-3">그래프(확진,사망)</div>
+			<div class="text-3xl font-bold px-10 py-3">누적 그래프</div>
 			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="daily">일별</button>
 			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="weekly">주별</button>
 			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="monthly">월별</button>
+			
+			<select id="select-choice" class="btn-primary bg-red-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
+				<option value="dicideCnt">확진자</option>
+				<option value="deathCnt">사망자</option>
+			</select>
+			<script>
+				$('#select-choice').val(this.value());
+				$('#select-choice').change(function() {
+					location.href = '?result=' + this.value;
+				});
+			</script>
 			<div class="flex">
+				
 				<canvas class="w-screen" id="chart1"></canvas>
 				<canvas class="w-screen" id="chart2"></canvas>	
 			</div>
@@ -94,11 +106,11 @@
         	borderColor: "violet",
         	data: ["${death[6]}", "${death[5]}", "${death[4]}", "${death[3]}", "${death[2]}", "${death[1]}", "${death[0]}"],
 		}
-		]
-  	}
+		],
+  	};
   	
 	const configChart1 = {
-   		type: "bar",
+   		type: "line",
     	data: dataChart1,
     	options: {
     		responsive: false,
@@ -109,7 +121,7 @@
     	configChart1
   	);
   	const configChart2 = {
-		type: "bar",
+		type: "line",
 		data: dataChart2,
 		options: {
     		responsive: false,

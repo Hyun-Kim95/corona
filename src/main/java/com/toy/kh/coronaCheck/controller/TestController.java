@@ -34,13 +34,13 @@ public class TestController {
 		String buho = "";
 
 		// 어제 정보 가져옴
-		yesterday = Integer.parseInt(req.getAttribute("koreanewFcase").toString().replace(",", ""));
+		yesterday = Integer.parseInt(req.getAttribute("koreanewCcase").toString().replace(",", ""));
 		if (yesterday < 0) {
 			buho = "↓";
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("koreanewFcase", Util.numberFormat(yesterday) + buho);
+		req.setAttribute("koreanewCcase", Util.numberFormat(yesterday) + buho);
 
 		// 1주전 정보 가져옴
 		String seven = Util.getPastDateStr(7);
@@ -73,14 +73,14 @@ public class TestController {
 		req.setAttribute("monthdicideCnt", Util.numberFormat(month) + buho);
 
 		// 1주일간의 정보 모두 가져옴(차트생성용 데이터)
-		// String 을 List<>로 바꿔도 괜찮을 듯, todolist에서 보고 맞춰서 하기
 		int[] newcase = new int[7];
 		int[] death = new int[7];
 		String[] day = new String[7];
-		for (int i = 0; i < 7; i++) {
-			day[i] = Util.getPastDateStr(i);
-			newcase[i] = Util.getAsInt(past.get(day[i] + "dicideCnt"), 0);
-			death[i] = Util.getAsInt(past.get(day[i] + "deathCnt"), 0);
+		for (int i = 1; i < 8; i++) {
+			day[i-1] = Util.getPastDateStr(i);
+			newcase[i-1] = Util.getAsInt(past.get(day[i-1] + "dicideCnt"), 0);
+			death[i-1] = Util.getAsInt(past.get(day[i-1] + "deathCnt"), 0);
+			
 		}
 		req.setAttribute("day", day);
 		req.setAttribute("newcase", newcase);
