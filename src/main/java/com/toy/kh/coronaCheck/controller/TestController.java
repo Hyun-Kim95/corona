@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.toy.kh.coronaCheck.service.UrlService;
 import com.toy.kh.coronaCheck.util.Util;
@@ -18,7 +19,7 @@ public class TestController {
 	UrlService urlService;
 
 	@RequestMapping("main")
-	public String main(HttpServletRequest req) {
+	public String main(HttpServletRequest req, @RequestParam(defaultValue = "1")String result) {
 
 		Map<String, String> results = urlService.todayResult();
 		// 오늘과 관련된 정보들
@@ -83,8 +84,18 @@ public class TestController {
 			
 		}
 		req.setAttribute("day", day);
-		req.setAttribute("newcase", newcase);
-		req.setAttribute("death", death);
+		
+		if(result.equals("1")) {
+			req.setAttribute("val", "확진자");
+			req.setAttribute("col", "red");
+			req.setAttribute("newcase", newcase);
+		} else if(result.equals("2")) {
+			req.setAttribute("val", "사망자");
+			req.setAttribute("col", "violet");
+			req.setAttribute("newcase", death);
+		}
+		req.setAttribute("result", result);
+		
 		return "main";
 	}
 }

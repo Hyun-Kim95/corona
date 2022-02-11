@@ -6,6 +6,7 @@
 <%@ include file="head.jspf"%>
 <!-- Required chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div class="container mx-auto p-1">
 
 	<div class="">
@@ -36,19 +37,17 @@
 			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="monthly">월별</button>
 			
 			<select id="select-choice" class="btn-primary bg-red-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
-				<option value="dicideCnt">확진자</option>
-				<option value="deathCnt">사망자</option>
+				<option value="1">확진자</option>
+				<option value="2">사망자</option>
 			</select>
 			<script>
-				$('#select-choice').val(this.value());
+				$('#select-choice').val(${result});
 				$('#select-choice').change(function() {
 					location.href = '?result=' + this.value;
 				});
 			</script>
 			<div class="flex">
-				
-				<canvas class="w-screen" id="chart1"></canvas>
-				<canvas class="w-screen" id="chart2"></canvas>	
+				<canvas class="w-screen" id="chart1"></canvas>	
 			</div>
 		</div>
 		<!-- 지역별 표시 -->
@@ -89,24 +88,12 @@
     	labels: labelsChart,
     	datasets: [
       	{
-        	label: ["확진자"],
-        	backgroundColor: "red",
-        	borderColor: "red",
+        	label: ["${val}"],
+        	backgroundColor: "${col}",
+        	borderColor: "${col}",
         	data: ["${newcase[6]}", "${newcase[5]}", "${newcase[4]}", "${newcase[3]}", "${newcase[2]}", "${newcase[1]}", "${newcase[0]}"],
       	}
     	],
-  	};
-  	
-  	const dataChart2 = {
-		labels: labelsChart,
-		datasets: [
-		{
-        	label: ["사망자"],
-        	backgroundColor: "violet",
-        	borderColor: "violet",
-        	data: ["${death[6]}", "${death[5]}", "${death[4]}", "${death[3]}", "${death[2]}", "${death[1]}", "${death[0]}"],
-		}
-		],
   	};
   	
 	const configChart1 = {
@@ -120,16 +107,5 @@
     	document.getElementById("chart1"),
     	configChart1
   	);
-  	const configChart2 = {
-		type: "line",
-		data: dataChart2,
-		options: {
-    		responsive: false,
-    	}
-  	}
-  	var chart2 = new Chart(
-		document.getElementById("chart2"),
-    	configChart2
-  	)
 </script>
 <%@ include file="foot.jspf"%>
