@@ -19,22 +19,22 @@
 		</div>
 		<!-- 금일 확진자 -->
 		<div class="flex shadow rounded bg-white mt-3 w-96">
-			<div class="text-md font-bold px-5 py-3">신규 확진자<br>${koreanewCase}</div>
+			<div class="text-lg font-bold px-5 py-9">신규 확진자<br><span class="text-3xl">${koreanewCase}</span></div>
 			<div>
-				<div class="text-md font-bold px-5 py-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600"><br>${koreanewCcase}</span></div>
-				<div class="text-md font-bold px-5 py-3"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600"><br>${onedicideCnt}</span></div>
+				<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600"><br>${koreanewCcase}</span></div>
+				<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600"><br>${onedicideCnt}</span></div>
 			</div>
 			<div>
-				<div class="text-md font-bold px-5 py-3"><span class="text-gray-400">vs </span>2주전: <span class="text-red-600"><br>${twodicideCnt}</span></div>
-				<div class="text-md font-bold px-5 py-3"><span class="text-gray-400">vs </span>1달전: <span class="text-red-600"><br>${monthdicideCnt}</span></div>
+				<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>2주전: <span class="text-red-600"><br>${twodicideCnt}</span></div>
+				<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>1달전: <span class="text-red-600"><br>${monthdicideCnt}</span></div>
 			</div>
 		</div>
 		<!-- 그래프 -->
 		<div class="shadow rounded bg-white container mt-3 text-center w-96">
 			<div class="text-3xl font-bold px-5 py-3">누적 그래프</div>
-			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="daily">일별</button>
-			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="weekly">주별</button>
-			<button class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" name="monthly">월별</button>
+			<a href="/main?result=${result}&cycle=daily" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">일별</a>
+			<a href="/main?result=${result}&cycle=weekly" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">주별</a>
+			<a href="/main?result=${result}&cycle=monthly" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">월별</a>
 			
 			<select id="select-choice" class="btn-primary bg-red-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
 				<option value="1">확진자</option>
@@ -43,7 +43,7 @@
 			<script>
 				$('#select-choice').val(${result});
 				$('#select-choice').change(function() {
-					location.href = '?result=' + this.value;
+					location.href = '?result=' + this.value + '&cycle=${cycle}';
 				});
 			</script>
 			<div class="flex">

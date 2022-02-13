@@ -7,30 +7,91 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Util {
+	static SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
 
 	// 현재 날짜
 	public static String getNowDateStr() {
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
 		Date time = new Date();
 		return format1.format(time);
 	}
 
 	// 과거 날짜
 	public static String getPastDateStr(int day) {
-		SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMdd");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, day*(-1));
-		return format2.format(cal.getTime());
+		return format1.format(cal.getTime());
 	}
 	
 	// 한달 전 날짜
-	public static String getPastMonthStr() {
-		SimpleDateFormat format3 = new SimpleDateFormat("yyyyMMdd");
+	public static String getPastMonthStr(int day) {
 		Calendar mon = Calendar.getInstance();
-		mon.add(Calendar.MONTH, -1);
-		return format3.format(mon.getTime());
+		mon.add(Calendar.MONTH, (-1)*day);
+		return format1.format(mon.getTime());
 	}
 	
+	// 몇번째 주인지 확인
+	public static String getWeekOfMonth(String date) {
+		Calendar calendar = Calendar.getInstance();
+		String[] dates = yearMonthDay(date);
+		int year = Integer.parseInt(dates[0]);
+		int month = Integer.parseInt(dates[1]);
+		int day =  Integer.parseInt(dates[2]);
+		calendar.set(year, month - 1, day);
+		return calendar.get(Calendar.WEEK_OF_MONTH) + "";
+	}
+	
+	// 해당 주 마지막 일자
+	public static String getWeekInMonth(String date) {
+		Calendar cal = Calendar.getInstance();
+		
+		String[] dates = yearMonthDay(date);;
+		int year = Integer.parseInt(dates[0]);
+		int month = Integer.parseInt(dates[1]);
+		int week = Integer.parseInt(getWeekOfMonth(date));
+		String result = null;
+		
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month - 1);
+		
+		cal.set(Calendar.WEEK_OF_MONTH, week);
+
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		int endDay = cal.get(Calendar.DAY_OF_MONTH);
+		
+		if(endDay < 10) {
+			result = "0" + endDay;
+		}else {
+			result = endDay + "";
+		}
+		
+		return result;
+	}
+	
+	// 해당 월 마지막 일자
+	public static String getMaximumOfMonth(String date) {
+		Calendar cal = Calendar.getInstance();
+		String[] dates = yearMonthDay(date);
+		int year = Integer.parseInt(dates[0]);
+		int month = Integer.parseInt(dates[1]);
+		int day =  Integer.parseInt(dates[2]);
+		
+		cal.set(year, month-1, day);
+		return cal.getActualMaximum(Calendar.DAY_OF_MONTH) + "";
+	}
+	
+	// 날짜 받아서 년, 월, 일로 나눠줌
+	public static String[] yearMonthDay(String date) {
+		String[] dates = date.split("");
+		String[] result = new String[3];
+		String year = dates[0] + dates[1] + dates[2] + dates[3];
+		String month = dates[4] + dates[5];
+		String day = dates[6] + dates[7];
+		result[0] = year;
+		result[1] = month;
+		result[2] = day;
+		return result;
+	}
+
 	// Object를 int타입으로 리턴
 	public static int getAsInt(Object object, int defaultValue) {
 		if (object instanceof BigInteger) {

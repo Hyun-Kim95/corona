@@ -99,7 +99,7 @@ public class UrlService {
 		Map<String, String> past = new HashMap<>();
 
 		String day = Util.getNowDateStr();
-		String month = Util.getPastMonthStr();
+		String month = Util.getPastMonthStr(7);
 		try {
 			StringBuilder urlBuilder = new StringBuilder("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"); /*URL*/
 	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Uj7JHVlaJcD5DBtPQECFGH6tf1vBmpRshO6aEpIULQ7qrQ%2FCZiiycs6W6O1AV9pRmCPCiNBrc5SjUQAzqAVjeQ%3D%3D"); /*Service Key*/
@@ -129,7 +129,7 @@ public class UrlService {
 				
 //				System.out.println("해당일자 : " + getTagValue("stateDt", eElement));
 
-				past.put(getTagValue("stateDt", eElement) + "dicideCnt", getTagValue("decideCnt", eElement));
+				past.put(getTagValue("stateDt", eElement) + "decideCnt", getTagValue("decideCnt", eElement));
 				past.put(getTagValue("stateDt", eElement) + "deathCnt", getTagValue("deathCnt", eElement));
 			}
 

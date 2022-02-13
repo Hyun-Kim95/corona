@@ -23,7 +23,7 @@
 		<div class="flex-grow"></div>
 		<div>
 			<div class="flex text-center px-12 py-3 border-b-2">
-				<a href="/main?result=1" class="font-bold text-3xl flex items-center">
+				<a href="/main?result=1&cycle=daily" class="font-bold text-3xl flex items-center">
 					<span>Corona check</span>
 				</a>
 			</div>
