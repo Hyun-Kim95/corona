@@ -20,9 +20,10 @@ public class TestController {
 
 	@RequestMapping("main")
 	public String main(HttpServletRequest req, @RequestParam(defaultValue = "1") String result,
-			@RequestParam(defaultValue = "daily") String cycle) {
+			@RequestParam(defaultValue = "daily") String cycle, @RequestParam(defaultValue = "korea") String place,
+			@RequestParam(defaultValue = "1") String local) {
 
-		Map<String, String> results = urlService.todayResult();
+		Map<String, String> results = urlService.todayResult(local);
 		// 오늘과 관련된 정보들
 		Set<String> keys = results.keySet();
 		for (String key : keys) {
@@ -35,7 +36,7 @@ public class TestController {
 		int yesterday, one, two, month;
 		String buho = "";
 		// 어제 정보 가져옴
-		yesterday = Integer.parseInt(req.getAttribute("koreanewCase").toString().replace(",", ""))
+		yesterday = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
 				- (Integer.parseInt(past.get(Util.getPastDateStr(1) + "decideCnt").toString())
 						- Integer.parseInt(past.get(Util.getPastDateStr(2) + "decideCnt").toString()));
 		if (yesterday < 0) {
@@ -43,10 +44,10 @@ public class TestController {
 		} else {
 			buho = "↑";
 		}
-		req.setAttribute("koreanewCcase", Util.numberFormat(yesterday) + buho);
+		req.setAttribute("newCcase", Util.numberFormat(yesterday) + buho);
 
 		// 1주전 정보 가져옴
-		one = Integer.parseInt(req.getAttribute("koreanewCase").toString().replace(",", ""))
+		one = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
 				- (Integer.parseInt(past.get(Util.getPastDateStr(7) + "decideCnt").toString())
 						- Integer.parseInt(past.get(Util.getPastDateStr(8) + "decideCnt").toString()));
 		if (one < 0) {
@@ -57,7 +58,7 @@ public class TestController {
 		req.setAttribute("onedicideCnt", Util.numberFormat(one) + buho);
 
 		// 2주전 정보 가져옴
-		two = Integer.parseInt(req.getAttribute("koreanewCase").toString().replace(",", ""))
+		two = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
 				- (Integer.parseInt(past.get(Util.getPastDateStr(14) + "decideCnt").toString())
 						- Integer.parseInt(past.get(Util.getPastDateStr(15) + "decideCnt").toString()));
 		if (two < 0) {
@@ -68,7 +69,7 @@ public class TestController {
 		req.setAttribute("twodicideCnt", Util.numberFormat(two) + buho);
 
 		// 1달전 정보 가져옴
-		month = Integer.parseInt(req.getAttribute("koreanewCase").toString().replace(",", ""))
+		month = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
 				- (Integer.parseInt(past.get(Util.getPastDateStr(30) + "decideCnt").toString())
 						- Integer.parseInt(past.get(Util.getPastDateStr(31) + "decideCnt").toString()));
 		if (month < 0) {
@@ -89,7 +90,7 @@ public class TestController {
 				day[i - 1] = dates[1] + "." + dates[2];
 				newcase[i - 1] = Integer.parseInt(past.get(Util.getPastDateStr(i) + "decideCnt"));
 				death[i - 1] = Integer.parseInt(past.get(Util.getPastDateStr(i) + "deathCnt"));
-			}	// 주별 정보 
+			} // 주별 정보
 			else if (cycle.equals("weekly")) {
 				String[] dates = Util.yearMonthDay(Util.getPastDateStr(i * 7));
 				String zu = Util.getWeekOfMonth(Util.getPastDateStr(i * 7));
@@ -118,8 +119,10 @@ public class TestController {
 			else if (cycle.equals("monthly")) {
 				String[] dates = Util.yearMonthDay(Util.getPastDateStr(i * 30));
 				day[i - 1] = dates[1] + "월";
-				newcase[i - 1] = Util.getAsInt(past.get(dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "decideCnt"), 0);
-				death[i - 1] = Util.getAsInt(past.get(dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "deathCnt"), 0);
+				newcase[i - 1] = Util.getAsInt(past.get(
+						dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "decideCnt"), 0);
+				death[i - 1] = Util.getAsInt(past.get(
+						dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "deathCnt"), 0);
 			}
 
 		}
@@ -137,6 +140,21 @@ public class TestController {
 		}
 		req.setAttribute("result", result);
 
+		String chk1 = "";
+		String chk2 = "";
+		if (place.equals("korea")) {
+			chk1 = "check1";
+			chk2 = "check11";
+		} else if (place.equals("world")) {
+			chk1 = "check2";
+			chk2 = "check22";
+		} else {
+			chk1 = "check3";
+			chk2 = "check33";
+		}
+		req.setAttribute(chk1, "blue");
+		req.setAttribute(chk2, "pointer-events-none cursor-default");
+		req.setAttribute("local", local);
 		return "main";
 	}
 }

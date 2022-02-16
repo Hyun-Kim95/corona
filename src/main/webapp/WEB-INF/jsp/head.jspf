@@ -16,29 +16,20 @@
 <!-- 폰트어썸 불러오기 -->
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=d2pu9x1eno"></script>
 </head>
 <body class="bg-gray-100 ">
-<header class="top-bar h-24 bg-white shadow rounded mx-auto w-96">
-	<div class="container h-full flex">
-		<div class="flex-grow"></div>
-		<div>
-			<div class="flex text-center px-12 py-3 border-b-2">
-				<a href="/main?result=1&cycle=daily" class="font-bold text-3xl flex items-center">
-					<span>Corona check</span>
-				</a>
-			</div>
-			<div class="flex">
-				<div class="container">
-					<a href="#" class="text-xl p-5">국내</a>
-				</div>
-				<div class="container">
-					<a href="#" class="text-xl p-5">세계</a>
-				</div>
-				<div class="container">
-					<a href="#" class="text-xl p-5">백신</a>
-				</div>
-			</div>
+<header class="flex top-bar h-16 bg-white shadow rounded mx-auto mt-3 w-96 container justify-center">
+	<div class="flex-grow"></div>
+	<div>
+		<div class="flex text-center py-2">
+			<a href="/main" class="font-bold text-4xl flex items-center">
+				<span>Corona check</span>
+			</a>
 		</div>
-		<div class="flex-grow"></div>
 	</div>
+	<div class="flex-grow"></div>
 </header>

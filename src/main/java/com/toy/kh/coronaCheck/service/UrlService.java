@@ -25,7 +25,7 @@ import com.toy.kh.coronaCheck.util.Util;
 public class UrlService {
 
 	// 오늘, 어제와의 차이 정보확인 가능(신규 확진자 수, 확진자 수, 완치자 수, 사망자 수, 전일대비 증감)
-	public Map<String, String> todayResult(){
+	public Map<String, String> todayResult(String local1){
 		
 		Map<String, String> today = new HashMap<>();
 		
@@ -60,9 +60,13 @@ public class UrlService {
             String[] ziyok = { "korea", "seoul", "busan", "daegu", "incheon", "gwangju", "daejeon", "ulsan", "sejong",
     				"gyeonggi", "gangwon", "chungbuk", "chungnam", "jeonbuk", "jeonnam", "gyeongbuk", "gyeongnam", "jeju" };
             
+            String[] ziy = {"korea", ""};
+            if(!local1.equals("1")) {
+            	ziy[1] = ziyok[Integer.parseInt(local1) - 1];
+            }
             // 객체형태로
             // {"returnType":"json","clearDate":"--",.......},...
-            for (String zi : ziyok) {
+            for (String zi : ziy) {
             	JSONObject local = (JSONObject) obj.get(zi);		// 지역명
                 String countryName = (String) local.get("countryName");	// 시도명(지역명)	
                 String newCase = (String) local.get("newCase");			// 신규확진환자수
@@ -72,15 +76,24 @@ public class UrlService {
                 String percentage  = (String) local.get("percentage");	// 발생률
                 String newCcase  = (String) local.get("newCcase");		// 전일대비증감-해외유입
                 String newFcase  = (String) local.get("newFcase");		// 전일대비증감-지역발생
-                
-                today.put(zi + "countryName", countryName);
-                today.put(zi + "newCase", newCase);
-                today.put(zi + "totalCase", totalCase);
-                today.put(zi + "recovered", recovered);
-                today.put(zi + "death", death);
-                today.put(zi + "percentage", percentage);
-                today.put(zi + "newCcase", newCcase);
-                today.put(zi + "newFcase", newFcase);
+                if(zi.equals("korea")) {
+	                today.put(zi + "countryName", countryName);
+	                today.put(zi + "newCase", newCase);
+	                today.put(zi + "totalCase", totalCase);
+	                today.put(zi + "recovered", recovered);
+	                today.put(zi + "death", death);
+	                today.put(zi + "percentage", percentage);
+	                today.put(zi + "newCcase", newCcase);
+	                today.put(zi + "newFcase", newFcase);
+                }
+            	today.put("countryName", countryName);
+                today.put("newCase", newCase);
+                today.put("totalCase", totalCase);
+                today.put("recovered", recovered);
+                today.put("death", death);
+                today.put("percentage", percentage);
+                today.put("newCcase", newCcase);
+                today.put("newFcase", newFcase);
 			}
             
 	        rd.close();
@@ -163,5 +176,40 @@ public class UrlService {
 		if(nValue == null)
 			return null;
 		return nValue.getNodeValue();
+	}
+	
+	// 백신센터 정보
+	public Map<String, String> vaccine(){
+		Map<String, String> center = new HashMap<>();
+		try {
+			StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B551182/rprtHospService/getRprtHospService"); /*URL*/
+	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Uj7JHVlaJcD5DBtPQECFGH6tf1vBmpRshO6aEpIULQ7qrQ%2FCZiiycs6W6O1AV9pRmCPCiNBrc5SjUQAzqAVjeQ%3D%3D"); /*Service Key*/
+	        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+	        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
+	        URL url = new URL(urlBuilder.toString());
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("GET");
+	        conn.setRequestProperty("Content-type", "application/json");
+	        System.out.println("Response code: " + conn.getResponseCode());
+	        BufferedReader rd;
+	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        } else {
+	            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+	        }
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        while ((line = rd.readLine()) != null) {
+	            sb.append(line);
+	        }
+	        rd.close();
+	        conn.disconnect();
+	        System.out.println(sb.toString());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return center;
 	}
 }
