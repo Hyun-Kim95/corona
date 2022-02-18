@@ -70,9 +70,9 @@
 			<!-- 그래프 -->
 			<div class="shadow rounded bg-white container mt-3 text-center w-96">
 				<div class="text-3xl font-bold px-5 py-3">누적 그래프</div>
-				<a href="/main?result=${result}&cycle=daily" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">일별</a>
-				<a href="/main?result=${result}&cycle=weekly" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">주별</a>
-				<a href="/main?result=${result}&cycle=monthly" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">월별</a>
+				<a href="/main?result=${result}&cycle=daily&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">일별</a>
+				<a href="/main?result=${result}&cycle=weekly&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">주별</a>
+				<a href="/main?result=${result}&cycle=monthly&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">월별</a>
 				
 				<select id="select-choice" class="btn-primary bg-red-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
 					<option value="1">확진자</option>
@@ -81,7 +81,7 @@
 				<script>
 					$('#select-choice').val(${result});
 					$('#select-choice').change(function() {
-						location.href = '?result=' + this.value + '&cycle=${cycle}';
+						location.href = '?result=' + this.value + '&cycle=${cycle}&local=${local}';
 					});
 				</script>
 				<div class="flex">

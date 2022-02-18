@@ -31,14 +31,17 @@ public class TestController {
 		}
 
 		// 과거정보 가져올 준비
+		String[] gubun = { "Total", "Seoul", "Busan", "Daegu", "Incheon", "Gwangju", "Daejeon", "Ulsan", "Sejong",
+				"Gyeonggi-do", "Gangwon-do", "Chungcheongbuk-do", "Chungcheongnam-do", "Jeollabuk-do", "Jeollanam-do", "Gyeongsangbuk-do", "Gyeongsangnam-do", "Jeju" };
+		
 		Map<String, String> past;
 		past = urlService.pastResult();
 		int yesterday, one, two, month;
 		String buho = "";
 		// 어제 정보 가져옴
-		yesterday = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
-				- (Integer.parseInt(past.get(Util.getPastDateStr(1) + "decideCnt").toString())
-						- Integer.parseInt(past.get(Util.getPastDateStr(2) + "decideCnt").toString()));
+		yesterday = Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0)
+				- (Util.getAsInt(past.get(Util.getPastDateStr(1) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0)
+						- Util.getAsInt(past.get(Util.getPastDateStr(2) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0));
 		if (yesterday < 0) {
 			buho = "↓";
 		} else {
@@ -47,9 +50,9 @@ public class TestController {
 		req.setAttribute("newCcase", Util.numberFormat(yesterday) + buho);
 
 		// 1주전 정보 가져옴
-		one = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
-				- (Integer.parseInt(past.get(Util.getPastDateStr(7) + "decideCnt").toString())
-						- Integer.parseInt(past.get(Util.getPastDateStr(8) + "decideCnt").toString()));
+		one = Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0)
+				- (Util.getAsInt(past.get(Util.getPastDateStr(7) + gubun[Integer.parseInt(local) - 1] + "defCnt"), 0)
+						- Util.getAsInt(past.get(Util.getPastDateStr(8) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0));
 		if (one < 0) {
 			buho = "↓";
 		} else {
@@ -58,9 +61,9 @@ public class TestController {
 		req.setAttribute("onedicideCnt", Util.numberFormat(one) + buho);
 
 		// 2주전 정보 가져옴
-		two = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
-				- (Integer.parseInt(past.get(Util.getPastDateStr(14) + "decideCnt").toString())
-						- Integer.parseInt(past.get(Util.getPastDateStr(15) + "decideCnt").toString()));
+		two = Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0)
+				- (Util.getAsInt(past.get(Util.getPastDateStr(14) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0)
+						- Util.getAsInt(past.get(Util.getPastDateStr(15) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0));
 		if (two < 0) {
 			buho = "↓";
 		} else {
@@ -69,9 +72,13 @@ public class TestController {
 		req.setAttribute("twodicideCnt", Util.numberFormat(two) + buho);
 
 		// 1달전 정보 가져옴
-		month = Integer.parseInt(req.getAttribute("newCase").toString().replace(",", ""))
-				- (Integer.parseInt(past.get(Util.getPastDateStr(30) + "decideCnt").toString())
-						- Integer.parseInt(past.get(Util.getPastDateStr(31) + "decideCnt").toString()));
+		month = Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0)
+				- (Util.getAsInt(past.get(Util.getPastDateStr(30) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0)
+						- Util.getAsInt(past.get(Util.getPastDateStr(31) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0));
+//		System.out.println("&&&&&&&&&&&&&&&&&&&");
+//		System.out.println(Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0));
+//		System.out.println(Util.getPastDateStr(30) + gubun[Integer.parseInt(local) - 1] + "defCnt");
+//		System.out.println(past.get(Util.getPastDateStr(31) + gubun[Integer.parseInt(local) - 1] + "defCnt"));
 		if (month < 0) {
 			buho = "↓";
 		} else {
@@ -86,16 +93,16 @@ public class TestController {
 		for (int i = 1; i < 8; i++) {
 			// 일별 정보
 			if (cycle.equals("daily")) {
-				String[] dates = Util.yearMonthDay(Util.getPastDateStr(i));
+				String[] dates = Util.getPastDateStr(i).split("-");
 				day[i - 1] = dates[1] + "." + dates[2];
-				newcase[i - 1] = Integer.parseInt(past.get(Util.getPastDateStr(i) + "decideCnt"));
-				death[i - 1] = Integer.parseInt(past.get(Util.getPastDateStr(i) + "deathCnt"));
+				newcase[i - 1] = Util.getAsInt(past.get(Util.getPastDateStr(i) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0);
+				death[i - 1] = Util.getAsInt(past.get(Util.getPastDateStr(i) + gubun[Integer.parseInt(local) - 1] + "deathCnt"),0);
 			} // 주별 정보
 			else if (cycle.equals("weekly")) {
-				String[] dates = Util.yearMonthDay(Util.getPastDateStr(i * 7));
+				String[] dates = Util.getPastDateStr(i * 7).split("-");
 				String zu = Util.getWeekOfMonth(Util.getPastDateStr(i * 7));
 				if (Util.getWeekOfMonth(Util.getPastDateStr(i * 7)).equals(Util
-						.getWeekOfMonth(dates[0] + dates[1] + Util.getMaximumOfMonth(Util.getPastDateStr(i * 7))))) {
+						.getWeekOfMonth(dates[0] + "-" + dates[1] + "-" + Util.getMaximumOfMonth(Util.getPastDateStr(i * 7))))) {
 					if (Integer.parseInt(dates[1]) < 12) {
 						if (Integer.parseInt(dates[1]) + 1 < 10) {
 							dates[1] = "0" + (Integer.parseInt(dates[1]) + 1);
@@ -112,17 +119,17 @@ public class TestController {
 				}
 				day[i - 1] = dates[1] + "월 " + zu + "주차";
 				newcase[i - 1] = Integer.parseInt(
-						past.get(dates[0] + dates[1] + Util.getWeekInMonth(Util.getPastDateStr(i * 7)) + "decideCnt"));
+						past.get(dates[0] + "-" + dates[1] + "-" + Util.getWeekInMonth(Util.getPastDateStr(i * 7)) + gubun[Integer.parseInt(local) - 1] + "defCnt"));
 				death[i - 1] = Integer.parseInt(
-						past.get(dates[0] + dates[1] + Util.getWeekInMonth(Util.getPastDateStr(i * 7)) + "deathCnt"));
+						past.get(dates[0] + "-" + dates[1] + "-" + Util.getWeekInMonth(Util.getPastDateStr(i * 7)) + gubun[Integer.parseInt(local) - 1] + "deathCnt"));
 			} // 월별 정보
 			else if (cycle.equals("monthly")) {
-				String[] dates = Util.yearMonthDay(Util.getPastDateStr(i * 30));
+				String[] dates = Util.getPastDateStr(i * 30).split("-");
 				day[i - 1] = dates[1] + "월";
 				newcase[i - 1] = Util.getAsInt(past.get(
-						dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "decideCnt"), 0);
+						dates[0] + "-" + dates[1] + "-" + Util.getMaximumOfMonth(Util.getPastDateStr(i * 30)) + gubun[Integer.parseInt(local) - 1] + "defCnt"), 0);
 				death[i - 1] = Util.getAsInt(past.get(
-						dates[0] + dates[1] + Util.getMaximumOfMonth(dates[0] + dates[1] + dates[2]) + "deathCnt"), 0);
+						dates[0] + "-" + dates[1] + "-" + Util.getMaximumOfMonth(Util.getPastDateStr(i * 30)) + gubun[Integer.parseInt(local) - 1] + "deathCnt"), 0);
 			}
 
 		}

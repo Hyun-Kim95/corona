@@ -60,7 +60,7 @@ public class UrlService {
             String[] ziyok = { "korea", "seoul", "busan", "daegu", "incheon", "gwangju", "daejeon", "ulsan", "sejong",
     				"gyeonggi", "gangwon", "chungbuk", "chungnam", "jeonbuk", "jeonnam", "gyeongbuk", "gyeongnam", "jeju" };
             
-            String[] ziy = {"korea", ""};
+            String[] ziy = {"korea", "korea"};
             if(!local1.equals("1")) {
             	ziy[1] = ziyok[Integer.parseInt(local1) - 1];
             }
@@ -107,14 +107,25 @@ public class UrlService {
 		return today;
 	}
 	
-	// 과거의 기록들 확인 가능(확진자 수, 사망자 수) 오늘 + 1달전까지
+	// xml의 tag값의 정보를 가져오는 메서드(과거기록 확인할때 사용)
+	private static String getTagValue(String tag, Element eElement) {
+		NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
+		Node nValue = (Node)nlList.item(0);
+		if(nValue == null)
+			return null;
+		return nValue.getNodeValue();
+	}
+	
+	// 과거의 지역별 기록들 확인 가능(확진자 수, 사망자 수) 오늘 + 1달전까지
 	public Map<String, String> pastResult(){
 		Map<String, String> past = new HashMap<>();
 
 		String day = Util.getNowDateStr();
 		String month = Util.getPastMonthStr(7);
+		day = day.split("-")[0] + day.split("-")[1] + day.split("-")[2];
+		month = month.split("-")[0] + month.split("-")[1] + month.split("-")[2];
 		try {
-			StringBuilder urlBuilder = new StringBuilder("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"); /*URL*/
+			StringBuilder urlBuilder = new StringBuilder("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19SidoInfStateJson"); /*URL*/
 	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Uj7JHVlaJcD5DBtPQECFGH6tf1vBmpRshO6aEpIULQ7qrQ%2FCZiiycs6W6O1AV9pRmCPCiNBrc5SjUQAzqAVjeQ%3D%3D"); /*Service Key*/
 	        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
 	        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
@@ -125,11 +136,11 @@ public class UrlService {
 	        conn.setRequestMethod("GET");
 	        conn.setRequestProperty("Content-type", "application/json");
 //	        System.out.println("Response code: " + conn.getResponseCode());
-
+	        
 	        DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
 			Document doc = dBuilder.parse(url.toString());
-
+			
 			// 제일 첫번째 태그
 			doc.getDocumentElement().normalize();
 
@@ -139,43 +150,31 @@ public class UrlService {
 				Node nNode = nList.item(i);
 
 				Element eElement = (Element) nNode;
-				
+				if(!getTagValue("gubunEn", eElement).equals("Lazaretto")) {
+					past.put(getTagValue("createDt", eElement).split(" ")[0] + getTagValue("gubunEn", eElement) + "defCnt", getTagValue("defCnt", eElement));
+					past.put(getTagValue("createDt", eElement).split(" ")[0] + getTagValue("gubunEn", eElement) + "deathCnt", getTagValue("deathCnt", eElement));
+				}
 //				System.out.println("해당일자 : " + getTagValue("stateDt", eElement));
-
-				past.put(getTagValue("stateDt", eElement) + "decideCnt", getTagValue("decideCnt", eElement));
-				past.put(getTagValue("stateDt", eElement) + "deathCnt", getTagValue("deathCnt", eElement));
 			}
-
+			
 	        BufferedReader rd;
 	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
 	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        } else {
 	            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-	        }
+	        } 
 	        StringBuilder sb = new StringBuilder();
 	        String line;
 	        while ((line = rd.readLine()) != null) {
 	            sb.append(line);
 	        }
-
 	        rd.close();
 	        conn.disconnect();
 //	        System.out.println(sb.toString());
-
-		}catch (Exception e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 		return past;
-	}
-
-	// xml의 tag값의 정보를 가져오는 메서드(과거기록 확인할때 사용)
-	private static String getTagValue(String tag, Element eElement) {
-		NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
-		Node nValue = (Node)nlList.item(0);
-		if(nValue == null)
-			return null;
-		return nValue.getNodeValue();
 	}
 	
 	// 백신센터 정보
@@ -190,7 +189,7 @@ public class UrlService {
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	        conn.setRequestMethod("GET");
 	        conn.setRequestProperty("Content-type", "application/json");
-	        System.out.println("Response code: " + conn.getResponseCode());
+//	        System.out.println("Response code: " + conn.getResponseCode());
 	        BufferedReader rd;
 	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
 	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -204,7 +203,7 @@ public class UrlService {
 	        }
 	        rd.close();
 	        conn.disconnect();
-	        System.out.println(sb.toString());
+//	        System.out.println(sb.toString());
 		}
 		catch(Exception e) {
 			e.printStackTrace();

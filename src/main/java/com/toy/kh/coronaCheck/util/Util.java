@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Util {
-	static SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMdd");
+	static SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 
 	// 현재 날짜
 	public static String getNowDateStr() {
@@ -32,7 +32,7 @@ public class Util {
 	// 몇번째 주인지 확인
 	public static String getWeekOfMonth(String date) {
 		Calendar calendar = Calendar.getInstance();
-		String[] dates = yearMonthDay(date);
+		String[] dates = date.split("-");
 		int year = Integer.parseInt(dates[0]);
 		int month = Integer.parseInt(dates[1]);
 		int day =  Integer.parseInt(dates[2]);
@@ -44,7 +44,7 @@ public class Util {
 	public static String getWeekInMonth(String date) {
 		Calendar cal = Calendar.getInstance();
 		
-		String[] dates = yearMonthDay(date);;
+		String[] dates = date.split("-");
 		int year = Integer.parseInt(dates[0]);
 		int month = Integer.parseInt(dates[1]);
 		int week = Integer.parseInt(getWeekOfMonth(date));
@@ -70,26 +70,13 @@ public class Util {
 	// 해당 월 마지막 일자
 	public static String getMaximumOfMonth(String date) {
 		Calendar cal = Calendar.getInstance();
-		String[] dates = yearMonthDay(date);
+		String[] dates = date.split("-");
 		int year = Integer.parseInt(dates[0]);
 		int month = Integer.parseInt(dates[1]);
 		int day =  Integer.parseInt(dates[2]);
 		
 		cal.set(year, month-1, day);
 		return cal.getActualMaximum(Calendar.DAY_OF_MONTH) + "";
-	}
-	
-	// 날짜 받아서 년, 월, 일로 나눠줌
-	public static String[] yearMonthDay(String date) {
-		String[] dates = date.split("");
-		String[] result = new String[3];
-		String year = dates[0] + dates[1] + dates[2] + dates[3];
-		String month = dates[4] + dates[5];
-		String day = dates[6] + dates[7];
-		result[0] = year;
-		result[1] = month;
-		result[2] = day;
-		return result;
 	}
 
 	// Object를 int타입으로 리턴
