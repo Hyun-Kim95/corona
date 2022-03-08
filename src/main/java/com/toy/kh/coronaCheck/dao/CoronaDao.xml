@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//UTF-8"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.toy.kh.coronaCheck.dao.CoronaDao">
+
+	<insert id="saveCenter" keyProperty="id">
+		INSERT INTO center SET
+		name = #{yadmNm},
+		sido = #{sidoCdNm},
+		addr = #{addr},
+		telno = #{telno},
+		xposwgs84 = #{XPosWgs84},
+		yposwgs84 = #{YPosWgs84}
+	</insert>
+	
+	<select id="getCenterOfLocal" resultType="CoronaDto">
+		SELECT *
+		FROM center
+		WHERE sido = #{local}
+	</select>
+</mapper>
