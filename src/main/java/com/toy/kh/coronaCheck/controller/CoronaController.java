@@ -13,28 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.toy.kh.coronaCheck.dto.CoronaDto;
-import com.toy.kh.coronaCheck.service.UrlService;
+import com.toy.kh.coronaCheck.service.CoronaService;
 import com.toy.kh.coronaCheck.util.Util;
 
 @Controller
 public class CoronaController {
 	@Autowired
-	UrlService urlService;
+	CoronaService coronaService;
 
 	@RequestMapping("main")
 	public String main(HttpServletRequest req, @RequestParam(defaultValue = "1") String result,
-			@RequestParam(defaultValue = "daily") String cycle, @RequestParam(defaultValue = "korea") String place,
-			@RequestParam(defaultValue = "1") String local) {
+			@RequestParam(defaultValue = "daily") String cycle,	@RequestParam(defaultValue = "1") String local, @RequestParam(defaultValue = "") String address) {
 
-		Map<String, String> results = urlService.todayResult(local);
+		Map<String, String> results = coronaService.todayResult(local);
 		// 오늘과 관련된 정보들
 		Set<String> keys = results.keySet();
 		for (String key : keys) {
 			req.setAttribute(key, results.get(key));
 		}
-		// 지역별 백신센터 정보 가져옴
+		// 지역별 백신센터 정보 가져옴(
 		String[] vaccineCenter = {"서울", "서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종시", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"};
-		List<CoronaDto> centerLocal = urlService.vaccineOfDB(vaccineCenter[Integer.parseInt(local) - 1]);
+		List<CoronaDto> centerLocal = coronaService.vaccineOfDB(vaccineCenter[Integer.parseInt(local) - 1]);			
+
 		List<List<String>> centerL = new ArrayList<List<String>>();
 		for (CoronaDto coro : centerLocal) {
 			List<String> ex = new ArrayList<String>();
@@ -45,14 +45,26 @@ public class CoronaController {
 			ex.add(coro.getYposwgs84());
 			centerL.add(ex);
 		}
+		
+		// 검색한 위치를 중심으로 보도록
+		// 검색한 주소가 없다면 첫번째 센터를 중심으로 설정
+		if(address.trim().equals("") || coronaService.geoCoding(address) == null) {
+			req.setAttribute("mapCenter_x", centerL.get(0).get(3));
+			req.setAttribute("mapCenter_y", centerL.get(0).get(4));
+		}else {	// 검색한 주소가 있다면 검색한 주소를 중심으로 설정
+			String[]coordinate = coronaService.geoCoding(address);
+			req.setAttribute("mapCenter_x", coordinate[0]);
+			req.setAttribute("mapCenter_y", coordinate[1]);
+		}
 		req.setAttribute("centerLocal", centerL);
-				
+		req.setAttribute("address", address);
+		
 		// 과거정보 가져올 준비
 		String[] gubun = { "Total", "Seoul", "Busan", "Daegu", "Incheon", "Gwangju", "Daejeon", "Ulsan", "Sejong",
 				"Gyeonggi-do", "Gangwon-do", "Chungcheongbuk-do", "Chungcheongnam-do", "Jeollabuk-do", "Jeollanam-do", "Gyeongsangbuk-do", "Gyeongsangnam-do", "Jeju" };
 		
 		Map<String, String> past;
-		past = urlService.pastResult();
+		past = coronaService.pastResult();
 		int yesterday, one, two, month;
 		String buho = "";
 		// 어제 정보 가져옴
@@ -92,10 +104,7 @@ public class CoronaController {
 		month = Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0)
 				- (Util.getAsInt(past.get(Util.getPastDateStr(30) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0)
 						- Util.getAsInt(past.get(Util.getPastDateStr(31) + gubun[Integer.parseInt(local) - 1] + "defCnt"),0));
-//		System.out.println("&&&&&&&&&&&&&&&&&&&");
-//		System.out.println(Util.getAsInt(req.getAttribute("newCase").toString().replace(",", ""),0));
-//		System.out.println(Util.getPastDateStr(30) + gubun[Integer.parseInt(local) - 1] + "defCnt");
-//		System.out.println(past.get(Util.getPastDateStr(31) + gubun[Integer.parseInt(local) - 1] + "defCnt"));
+
 		if (month < 0) {
 			buho = "↓";
 		} else {
@@ -164,20 +173,6 @@ public class CoronaController {
 		}
 		req.setAttribute("result", result);
 
-		String chk1 = "";
-		String chk2 = "";
-		if (place.equals("korea")) {
-			chk1 = "check1";
-			chk2 = "check11";
-		} else if (place.equals("world")) {
-			chk1 = "check2";
-			chk2 = "check22";
-		} else {
-			chk1 = "check3";
-			chk2 = "check33";
-		}
-		req.setAttribute(chk1, "blue");
-		req.setAttribute(chk2, "pointer-events-none cursor-default");
 		req.setAttribute("local", local);
 		return "main";
 	}

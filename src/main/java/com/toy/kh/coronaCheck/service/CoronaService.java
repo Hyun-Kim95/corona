@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import com.toy.kh.coronaCheck.dto.CoronaDto;
 import com.toy.kh.coronaCheck.util.Util;
 
 @Service
-public class UrlService {
+public class CoronaService {
 
 	@Autowired
 	private CoronaDao coronaDao;
@@ -270,5 +271,57 @@ public class UrlService {
 		}
 
 		return center;
+	}
+	
+	// 주소 -> 좌표 변환
+	public String[] geoCoding(String location) {
+		String clientId = "d2pu9x1eno";  //clientId 
+        String clientSecret = "eQjtRnD5A18QZUD86BiTizcDRXSanGvZ9wjCWJAv";  //clientSecret 
+         
+        try {
+            String addr = URLEncoder.encode(location, "UTF-8");  //주소입력
+            String apiURL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=" + addr; //json
+//            String apiURL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode.xml?query=" + addr; // xml
+            URL url = new URL(apiURL);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
+            con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
+            int responseCode = con.getResponseCode();
+            BufferedReader br;
+            if(responseCode==200) { 
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {  
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+//            System.out.println(responseCode);
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+            }
+            
+	        // JSON parser 만들어 문자열 데이터를 객체화한다.
+			JSONParser parser = new JSONParser();
+			JSONObject obj = (JSONObject) parser.parse(response.toString());
+			
+			JSONArray jsonArr = (JSONArray) obj.get("addresses");
+			JSONObject jsonObj = (JSONObject) jsonArr.get(0);
+			
+			String coordx = (String) jsonObj.get("x");
+			String coordy = (String) jsonObj.get("y");
+			
+			String[] coords = new String[2];
+			coords[0] = coordx;
+			coords[1] = coordy;			
+			
+            br.close();
+            
+            return coords;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
 	}
 }
