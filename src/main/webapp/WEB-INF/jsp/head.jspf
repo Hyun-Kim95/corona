@@ -26,6 +26,32 @@
 	<div class="flex-grow"></div>
 	<div>
 		<div class="flex text-center py-2">
+			<select id="select-local" class="btn-primary hover:bg-blue-dark text-lg m-1 py-1 px-2 rounded border-2">
+					<option value="1">전국</option>
+					<option value="2">서울</option>
+					<option value="3">부산</option>
+					<option value="4">대구</option>
+					<option value="5">인천</option>
+					<option value="6">광주</option>
+					<option value="7">대전</option>
+					<option value="8">울산</option>
+					<option value="9">세종</option>
+					<option value="10">경기</option>
+					<option value="11">강원</option>
+					<option value="12">충북</option>
+					<option value="13">충남</option>
+					<option value="14">전북</option>
+					<option value="15">전남</option>
+					<option value="16">경북</option>
+					<option value="17">경남</option>
+					<option value="18">제주</option>
+				</select>
+				<script>
+					$('#select-local').val(${local});
+					$('#select-local').change(function() {
+						location.href = '?local=' + this.value + '&address=${address}';
+					});
+				</script>
 			<a href="/main" class="font-bold text-4xl flex items-center">
 				<span>Corona check</span>
 			</a>

@@ -3,19 +3,18 @@
 
 </body>
 </html>
-<div class="flex justify-center rounded-md mt-3 container mx-auto">
-    <footer id="footer" class="text-center sm:text-3xl">
-        <div tabindex="0" aria-label="footer" class="focus:outline-none border-t border-b border-gray-200 dark:border-gray-700 py-16">
-        	<div class="items-center logo">
-        		<a class="focus:outline-none" tabindex="0" role="link" aria-label="home link" href="#">
-					footer
-       			</a>
-        	</div>
-            <div class="item-center logo">
-				<a target="_blank" aria-label="Github" href="https://github.com/Hyun-Kim95">
-				    <i class="fab fa-github"></i>
-				</a>
-            </div>
+<footer id="footer" class="flex rounded-md mt-3 container mx-auto w-96 bg-white shadow">
+    <div tabindex="0" aria-label="footer" class="focus:outline-none p-1">
+    	<div class="items-center text-xs">
+			본 사이트의 자료는 공식적인 근거 자료로 활용될 수 없으며,<br>
+			이 사이트에서 제공하는 정보 사용/공유로 인해 발생한 문제의<br>
+			책임은 전적으로 사용자에게 있습니다.<br>
+    	</div>
+        <div class="item-center logo text-base">
+			<a target="_blank" class="flex" aria-label="Github" href="https://github.com/Hyun-Kim95/corona">
+				<div>MADE BY Hyun-Kim95</div>
+    			<i class="fab fa-github"></i>
+			</a>
         </div>
-    </footer>
-</div>
+    </div>
+</footer>

@@ -26,41 +26,15 @@
 		<div class="flex">
 			<div class="flex-grow"></div>
 			<div class="shadow rounded bg-white mt-3 w-96">
-				<select id="select-local" class="btn-primary hover:bg-blue-dark text-lg m-1 py-1 px-2 rounded border-2">
-					<option value="1">전국</option>
-					<option value="2">서울</option>
-					<option value="3">부산</option>
-					<option value="4">대구</option>
-					<option value="5">인천</option>
-					<option value="6">광주</option>
-					<option value="7">대전</option>
-					<option value="8">울산</option>
-					<option value="9">세종</option>
-					<option value="10">경기</option>
-					<option value="11">강원</option>
-					<option value="12">충북</option>
-					<option value="13">충남</option>
-					<option value="14">전북</option>
-					<option value="15">전남</option>
-					<option value="16">경북</option>
-					<option value="17">경남</option>
-					<option value="18">제주</option>
-				</select>
-				<script>
-					$('#select-local').val(${local});
-					$('#select-local').change(function() {
-						location.href = '?local=' + this.value;
-					});
-				</script>
 				<div class="flex">
-					<div class="text-lg font-bold px-5 py-9">신규 확진자<br><span class="text-3xl">${newCase}</span></div>
+					<div class="text-lg font-bold pl-10 py-5">신규 확진자<br><span class="text-3xl">${newCase}</span></div>
 					<div>
-						<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>어제: <span class="text-red-600"><br>${newCcase}</span></div>
-						<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600"><br>${onedicideCnt}</span></div>
+						<div class="text-md font-bold px-5 py-1"><span class="text-gray-400">vs </span>어제: <span class="text-red-600"><br>${newCcase}</span></div>
+						<div class="text-md font-bold px-5 py-1"><span class="text-gray-400">vs </span>1주전: <span class="text-red-600"><br>${onedicideCnt}</span></div>
 					</div>
 					<div>
-						<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>2주전: <span class="text-red-600"><br>${twodicideCnt}</span></div>
-						<div class="text-md font-bold px-5 pt-3"><span class="text-gray-400">vs </span>1달전: <span class="text-red-600"><br>${monthdicideCnt}</span></div>
+						<div class="text-md font-bold px-5 py-1"><span class="text-gray-400">vs </span>2주전: <span class="text-red-600"><br>${twodicideCnt}</span></div>
+						<div class="text-md font-bold px-5 py-1"><span class="text-gray-400">vs </span>1달전: <span class="text-red-600"><br>${monthdicideCnt}</span></div>
 					</div>
 				</div>
 			</div>
@@ -70,10 +44,20 @@
 			<div class="flex-grow"></div>
 			<!-- 그래프 -->
 			<div class="shadow rounded bg-white container mt-3 text-center w-96">
-				<div class="text-3xl font-bold px-5 py-3">누적 그래프</div>
-				<a href="/main?result=${result}&cycle=daily&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">일별</a>
-				<a href="/main?result=${result}&cycle=weekly&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">주별</a>
-				<a href="/main?result=${result}&cycle=monthly&local=${local}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">월별</a>
+				<div class="text-3xl font-bold px-5 py-3">
+					<c:if test="${cycle == 'daily'}">
+						일별
+					</c:if>
+					<c:if test="${cycle == 'weekly'}">
+						주별
+					</c:if>
+					<c:if test="${cycle == 'monthly'}">
+						월별
+					</c:if>
+				누적 그래프</div>
+				<a href="/main?result=${result}&cycle=daily&local=${local}&address=${address}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">일별</a>
+				<a href="/main?result=${result}&cycle=weekly&local=${local}&address=${address}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">주별</a>
+				<a href="/main?result=${result}&cycle=monthly&local=${local}&address=${address}" class="btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">월별</a>
 				
 				<select id="select-choice" class="btn-primary bg-red-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
 					<option value="1">확진자</option>
@@ -82,7 +66,7 @@
 				<script>
 					$('#select-choice').val(${result});
 					$('#select-choice').change(function() {
-						location.href = '?result=' + this.value + '&cycle=${cycle}&local=${local}';
+						location.href = '?result=' + this.value + '&cycle=${cycle}&local=${local}&address=${address}';
 					});
 				</script>
 				<div class="flex">
@@ -92,28 +76,35 @@
 			<div class="flex-grow"></div>
 		</div>
 	</div>
-	<div class="flex">
+	<div class="m-1"></div>
+	<div class="rightcomponent flex">
 		<div class="flex-grow"></div>
 		<!-- 백신 표시 -->
-		<div class="shadow rounded bg-white container md:mx-3 mt-3 text-left w-96">
-			<div class="text-3xl font-bold px-10 py-3 text-center">백신 센터</div>
+		<div class="shadow rounded bg-white container mt-3 w-96">
+			<div class="flex">
+				<div class="text-xl font-bold mx-auto px-2 py-3 text-center">백신센터</div>
+				<form action="main" method="POST" class="flex my-2 mx-auto">
+					<input type="hidden" name="result" value="${result}"/>
+					<input type="hidden" name="cycle" value="${cycle}"/>
+					<input type="hidden" name="local" value="${local}"/>
+					<input name="address" class="mx-1 px-5 appearance-none border rounded w-full text-grey-darker"
+						type="text" placeholder="주소를 입력하세요" value="${address}"/>
+					<input class="mx-1 btn-primary bg-blue-500 hover:bg-blue-dark text-white font-bold px-2 rounded"
+						type="submit" value="검색" />
+				</form>
+			</div>
 			<div id="map" style="width:100%;height:400px;"></div>
-
+			<div class="text-center p-2">※검색한 주소의 주변을 표시합니다.</div>
 			<script>
 				var HOME_PATH = window.HOME_PATH || '.';
 				var MARKER_SPRITE_POSITION = new Array();	// 백신센터 이름, 주소 등 담김
-				
 				for(const center of ${centerLocal}){		// 위에다 백신센터별로 담음
 					MARKER_SPRITE_POSITION.push({...center});
 				}
 				var map = new naver.maps.Map('map', {		// 가져온 지역의 첫번째 센터를 중심으로 지도가 보이도록
-				    center: new naver.maps.LatLng(${centerLocal[0][4]}, ${centerLocal[0][3]}),
-				    zoom: 10
+				    center: new naver.maps.LatLng(${mapCenter_y}, ${mapCenter_x}),
+				    zoom: 15
 				});
-	
-				var bounds = map.getBounds(),
-				    southWest = bounds.getSW(),
-				    northEast = bounds.getNE();
 	
 				var markers = [],
 				    infoWindows = [];
@@ -130,20 +121,21 @@
 				    });
 	
 				    var infoWindow = new naver.maps.InfoWindow({
+				    	anchorSkew: true,
 				        content: '<div style="text-align:center;padding:1px;">'
-				        + '<b>"' + MARKER_SPRITE_POSITION[index][0] +'"</b><br>'
+				        + '<b>' + MARKER_SPRITE_POSITION[index][0] +'</b><br>'
 				        + MARKER_SPRITE_POSITION[index][1] +'<br>'
-				        + '<b>"'+ MARKER_SPRITE_POSITION[index][2] +'"</b>.</div>'
+				        + '<b>'+ MARKER_SPRITE_POSITION[index][2] +'</b>.</div>'
 				    });
 	
 				    markers.push(marker);
 				    infoWindows.push(infoWindow);
 				};
-	
+				
 				naver.maps.Event.addListener(map, 'idle', function() {
 				    updateMarkers(map, markers);
 				});
-	
+				
 				function updateMarkers(map, markers) {
 	
 				    var mapBounds = map.getBounds();
@@ -187,7 +179,7 @@
 				        }
 				    }
 				}
-	
+
 				for (var i=0, ii=markers.length; i<ii; i++) {
 				    naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
 				}
